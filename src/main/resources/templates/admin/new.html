@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+</head>
+<body>
+  <div th:replace="fragments/header :: header"></div>
+  <form th:method="POST" th:action="@{/admin}" th:object="${user}">
+    <label for="firstName">Введите имя: </label>
+    <input type="text" th:field="*{firstName}" id="firstName"/>
+    <br/>
+    <label for="lastName">Введите фамилию: </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <br/>
+    <label for="email">Введите имейл: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <br/>
+    <label for="age">Введите возраст: </label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <label for="password">Введите пароль: </label>
+    <input type="password" name="password" id="password"/>
+    <br/>
+    <div th:each="role : ${roles}">
+      <label>
+        <input type="checkbox"  name="usersRoles" th:value="${role.getName()}"/>
+        <span th:text="${role.getName()}"></span>
+      </label>
+    </div>
+    <input type="submit" value="Сохранить">
+  </form>
+</body>
+</html>

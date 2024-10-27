@@ -1,0 +1,20 @@
+<div th:fragment="header" class="text-bg-dark p-1">
+    <div class="row align-items-center">
+        <div class="col">
+            <span class="align-text-bottom fs-5">
+                <span th:text="${myInfo.getEmail()}"></span>
+                    <span:block th:each="role : ${myInfo.getRoles}">
+                        <span th:text="${role.getName()}"></span>
+                    </span:block>
+            </span>
+        </div>
+        <div class="col">
+            <figure class="text-end mb-0">
+                <form th:method="POST" th:action="@{/logout}">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit">Выйти</button>
+                </form>
+            </figure>
+        </div>
+    </div>
+</div>
