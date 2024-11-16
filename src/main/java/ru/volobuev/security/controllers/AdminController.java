@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.volobuev.security.dto.IdDTO;
 import ru.volobuev.security.dto.UserDTO;
 import ru.volobuev.security.models.Role;
-import ru.volobuev.security.models.User;
+import ru.volobuev.security.service.RoleService;
 import ru.volobuev.security.service.UserService;
 
 import java.util.List;
@@ -17,11 +17,13 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     @PostMapping("/getUsers")
     @ResponseBody
     public List<UserDTO> getAllUsers(){
-        List<UserDTO> users = userService.allUsers();
+        List<UserDTO> users = userService.getAll();
         System.out.println();
         return users;
     }
@@ -29,34 +31,32 @@ public class AdminController {
     @PostMapping("/createUser")
     @ResponseBody
     public void createUser(@RequestBody UserDTO userDTO){
-        userService.saveUser(
-                new User(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
-                        userDTO.getAge(), userDTO.getPassword()), userDTO.getRoles().toArray(new String[0]));
+        userService.save(userDTO);
     }
 
     @PostMapping("/deleteUser")
     @ResponseBody
     public void deleteUser(@RequestBody IdDTO idDTO){
-        userService.deleteUser(idDTO.getId());
+        userService.delete(idDTO.getId());
     }
 
     @PostMapping("/updateUser")
     @ResponseBody
     public void updateUser(@RequestBody UserDTO userDTO){
         System.out.println();
-        userService.updateUser(userDTO);
+        userService.update(userDTO);
     }
 
     @PostMapping("/getUserById")
     @ResponseBody
     public UserDTO getUserById(@RequestBody IdDTO idDTO){
-        return userService.findUserById(idDTO.getId());
+        return userService.findById(idDTO.getId());
     }
 
     @PostMapping("/getAllRoles")
     @ResponseBody
     public List<String> getAllRoles(){
-        List<Role> roles = userService.getAllRoles();
+        List<Role> roles = roleService.getAll();
         return roles.stream().map(Role::getName).toList();
     }
 
@@ -68,7 +68,7 @@ public class AdminController {
     public String show(
             @RequestParam(name = "id", required = false, defaultValue = "0") long id,
             Model model){
-        model.addAttribute("user", userService.findUserById(id));
+        model.addAttribute("user", userService.findById(id));
         return "admin/show";
     }
 //    @GetMapping("/new")

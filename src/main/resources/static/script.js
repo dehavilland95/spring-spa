@@ -106,9 +106,8 @@ const buttonHandlers = {
 
 
 window.onload = async () =>{
-    console.log(document.cookie)
     allRoles = await SERVER.getAllRoles()
-    drawUsersTable();
+    await drawUsersTable();
     drawCreateUserRoles();
     const user = await SERVER.getMyInfo();
     drawUserInfo(user);

@@ -10,45 +10,49 @@
 <body>
 <div>
     <p>Registration</p>
-    <form method="post" th:action="registration">
+    <form method="post" th:action="registration" th:object="${user}">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-12 row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">First name</p>
-                        <input type="text" class="form-control" name="firstName" id="firstName">
+                        <input type="text" class="form-control" name="firstName" id="firstName" th:field="*{firstName}">
                     </div>
                 </div>
                 <div class="col-md-12  row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">Last name</p>
-                        <input type="text" class="form-control" name="lastName" id="lastName">
+                        <input type="text" class="form-control" name="lastName" id="lastName" th:field="*{lastName}">
                     </div>
                 </div>
                 <div class="col-md-12  row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">Age</p>
-                        <input type="number" class="form-control" name="age" id="age">
+                        <input type="number" class="form-control" name="age" id="age" th:field="*{age}">
                     </div>
                 </div>
                 <div class="col-md-12  row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">Email</p>
-                        <input type="email" class="form-control" name="email" id="email">
+                        <input type="email" class="form-control" name="email" id="email" th:field="*{email}" required>
                     </div>
                 </div>
                 <div class="col-md-12  row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">Password</p>
-                        <input type="password" name="password" class="form-control" id="password">
+                        <input type="password" name="password" class="form-control" id="password" th:field="*{password}">
                     </div>
                 </div>
                 <div class="col-md-12  row justify-content-center">
                     <div class="input-width">
                         <p class="text-center">Role</p>
-                        <select class="form-select" name="roles" multiple>
-                            <option value="ROLE_USER">User</option>
-                            <option value="ROLE_ADMIN">Admin</option>
+                        <select class="form-select form-control" name="usersRoles" multiple>
+                            <div th:each="role : ${allRoles}">
+                                <option
+                                        th:value="${role.getName()}"
+                                        th:text="${role.getName()}">
+                                </option>
+                            </div>
                         </select>
                     </div>
                 </div>

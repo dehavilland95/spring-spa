@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class UserDTO implements Serializable {
-    long id;
+    Long id;
     String firstName;
     String lastName;
-    int age;
+    Integer age;
     String email;
     String password;
     List<String> roles;
