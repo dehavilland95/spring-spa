@@ -27,3 +27,13 @@ body{
 .add-user-btn{
     margin-top: 20px;
 }
+
+.roles span{
+    margin-left: 8px;
+}
+
+#logoutButton{
+    border: none;
+    background: no-repeat;
+    color: gray;
+}

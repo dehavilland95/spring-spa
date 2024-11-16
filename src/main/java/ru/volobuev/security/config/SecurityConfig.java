@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -45,12 +44,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       http
+       http.csrf().disable()
            .authorizeHttpRequests((requests) -> requests
                    .requestMatchers("/registration").not().authenticated()
-                   .requestMatchers("/admin").hasRole("ADMIN")
+                   .requestMatchers("/admin/**").hasRole("ADMIN")
                    .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
-           .requestMatchers("/", "/login", "/error", "/resources/**", "/logout", "/style.css").permitAll()
+           .requestMatchers("/", "/login", "/error", "/resources/**", "/logout",
+                            "/style.css", "/script.js").permitAll()
            .anyRequest().authenticated())
                .formLogin(formLogin -> formLogin.loginPage("/login")
                        .loginProcessingUrl("/login")
@@ -73,4 +73,6 @@ public class SecurityConfig {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider);
     }
+
+
 }

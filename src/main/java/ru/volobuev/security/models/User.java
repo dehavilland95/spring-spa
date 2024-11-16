@@ -1,5 +1,6 @@
 package ru.volobuev.security.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
     public User() {
     }
@@ -36,6 +38,13 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.email = email;
         this.age = age;
+    }
+    public User(String firstName, String lastName, String email, int age, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.age = age;
+        this.password = password;
     }
 
     public Long getId() {

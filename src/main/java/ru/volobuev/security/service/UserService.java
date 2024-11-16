@@ -8,12 +8,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.volobuev.security.dto.UserDTO;
 import ru.volobuev.security.models.Role;
 import ru.volobuev.security.models.User;
 import ru.volobuev.security.repository.RoleRepository;
 import ru.volobuev.security.repository.UserRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -35,31 +37,73 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+    public UserDTO getUserByUsername(String username) {
+        Optional<User> userOpt = userRepository.getByEmail(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return new UserDTO(
+                    user.getId(), user.getFirstName(), user.getLastName(), user.getAge(), user.getEmail(),
+                    user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        }else{
+            return new UserDTO();
+        }
+    }
+    public UserDTO findUserById(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return new UserDTO(
+                    user.getId(), user.getFirstName(), user.getLastName(), user.getAge(), user.getEmail(),
+                    user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        }else{
+            return new UserDTO();
+        }
     }
 
-    public void updateUser(long id, User user, String[] roleNames) {
+    public void updateUser(UserDTO userDTO) {
         System.out.println();
-        User userToUpdate = em.find(User.class, id);
+        User userToUpdate = em.find(User.class, userDTO.getId());
         Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
+        for (String roleName : userDTO.getRoles()) {
             Role role = roleRepository.findByName(roleName);
             if (role != null) {
                 roles.add(role);
             }
         }
-        userToUpdate.setFirstName(user.getFirstName());
-        userToUpdate.setLastName(user.getLastName());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setAge(user.getAge());
+        userToUpdate.setFirstName(userDTO.getFirstName());
+        userToUpdate.setLastName(userDTO.getLastName());
+        userToUpdate.setEmail(userDTO.getEmail());
+        userToUpdate.setAge(userDTO.getAge());
         userToUpdate.setRoles(roles);
         userRepository.save(userToUpdate);
     }
 
-    public List<User> allUsers() {
-        return userRepository.findAll();
+//    public void updateUser(long id, User user, String[] roleNames) {
+//        System.out.println();
+//        User userToUpdate = em.find(User.class, id);
+//        Set<Role> roles = new HashSet<>();
+//        for (String roleName : roleNames) {
+//            Role role = roleRepository.findByName(roleName);
+//            if (role != null) {
+//                roles.add(role);
+//            }
+//        }
+//        userToUpdate.setFirstName(user.getFirstName());
+//        userToUpdate.setLastName(user.getLastName());
+//        userToUpdate.setEmail(user.getEmail());
+//        userToUpdate.setAge(user.getAge());
+//        userToUpdate.setRoles(roles);
+//        userRepository.save(userToUpdate);
+//    }
+
+    public List<UserDTO> allUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user ->
+                        new UserDTO(user.getId(), user.getFirstName(), user.getLastName(),
+                                user.getAge(), user.getEmail(),
+                                user.getRoles().stream().map(role -> role.getName()).toList()))
+                .toList();
     }
 
     public boolean saveUser(User user, String[] roleNames) {

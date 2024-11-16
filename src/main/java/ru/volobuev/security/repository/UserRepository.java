@@ -5,8 +5,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.volobuev.security.models.User;
 
+import java.util.Optional;
+
 @Repository
 @Component
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
+    Optional<User> getByEmail(String email);
 }

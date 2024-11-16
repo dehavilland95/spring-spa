@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.volobuev.security.dto.UserDTO;
 import ru.volobuev.security.models.Role;
 import ru.volobuev.security.models.User;
 import ru.volobuev.security.service.UserService;
@@ -29,5 +30,12 @@ public class UsersController {
             model.addAttribute("myInfo", (User) user);
         }
         return "user/index";
+    }
+    @PostMapping("/getMyInfo")
+    @ResponseBody
+    public UserDTO getMyInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.getUserByUsername(username);
     }
 }
