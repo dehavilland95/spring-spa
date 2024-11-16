@@ -34,6 +34,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
     }
 
+    private User DTOToUser(UserDTO userDTO) {
+        return new User(
+            userDTO.getId() == null ? 0 : userDTO.getId(), userDTO.getFirstName(), userDTO.getLastName(),
+                userDTO.getAge(), userDTO.getEmail(), createRolesSet(userDTO.getRoles()));
+    }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -78,12 +84,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return roles;
     }
 
-    private User DTOToUser(UserDTO userDTO) {
-        return new User(
-                userDTO.getId(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAge(), userDTO.getEmail(),
-                createRolesSet(userDTO.getRoles()));
-    }
-
     @Transactional
     public void update(UserDTO userDTO) {
         User user = DTOToUser(userDTO);
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw  new RuntimeException("User already exists");
         }
         User user = DTOToUser(userDTO);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
     }
 
