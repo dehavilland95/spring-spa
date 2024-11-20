@@ -11,6 +11,7 @@ import ru.volobuev.security.models.Role;
 import ru.volobuev.security.models.User;
 import ru.volobuev.security.repository.UserRepository;
 import ru.volobuev.security.repository.RoleRepository;
+import ru.volobuev.security.utils.DtoConverter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,24 +21,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final DtoConverter dtoConverter;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                           PasswordEncoder bCryptPasswordEncoder) {
+                           PasswordEncoder bCryptPasswordEncoder, DtoConverter dtoConverter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    private UserDTO userToDTO(User user) {
-        return new UserDTO(
-                user.getId(), user.getFirstName(), user.getLastName(), user.getAge(), user.getEmail(),
-                user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
-    }
-
-    private User DTOToUser(UserDTO userDTO) {
-        return new User(
-            userDTO.getId() == null ? 0 : userDTO.getId(), userDTO.getFirstName(), userDTO.getLastName(),
-                userDTO.getAge(), userDTO.getEmail(), createRolesSet(userDTO.getRoles()));
+        this.dtoConverter = dtoConverter;
     }
 
     @Override
@@ -53,26 +44,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDTO findByUsername(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        return user.map(this::userToDTO).orElseGet(UserDTO::new);
+        return user.map(dtoConverter::userToDTO).orElseGet(UserDTO::new);
     }
 
 
     @Transactional(readOnly = true)
     public UserDTO findById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.map(this::userToDTO).orElseGet(UserDTO::new);
+        return userFromDb.map(dtoConverter::userToDTO).orElseGet(UserDTO::new);
     }
 
-    private Set<Role> createRolesSet(List<String> roleNames) {
-        Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            Role role = roleRepository.findByName(roleName);
-            if (role != null) {
-                roles.add(role);
-            }
-        }
-        return roles;
-    }
     private Set<Role> createRolesSet(String[] roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
@@ -86,13 +67,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Transactional
     public void update(UserDTO userDTO) {
-        User user = DTOToUser(userDTO);
+        User user = dtoConverter.dtoToUser(userDTO);
         userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     public List<UserDTO> getAll() {
-        return userRepository.findAll().stream().map(this::userToDTO).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(dtoConverter::userToDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -101,7 +82,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userFromDB.isPresent()) {
             throw  new RuntimeException("User already exists");
         }
-        User user = DTOToUser(userDTO);
+        User user = dtoConverter.dtoToUser(userDTO);
         user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
     }

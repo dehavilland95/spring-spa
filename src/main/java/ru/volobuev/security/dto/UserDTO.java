@@ -15,11 +15,16 @@ public class UserDTO implements Serializable {
 
     public UserDTO() {}
 
-    public UserDTO(long id, String firstName, String lastName, int age, String email, List<String> roles) {
+    public UserDTO(Long id, String firstName, String lastName, Integer age, String email, List<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.email = email;
+        this.roles = roles;
+    }
+
+    public UserDTO(String email, List<String> roles) {
         this.email = email;
         this.roles = roles;
     }
@@ -36,7 +41,7 @@ public class UserDTO implements Serializable {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,11 +61,11 @@ public class UserDTO implements Serializable {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

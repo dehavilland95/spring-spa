@@ -16,6 +16,7 @@ import ru.volobuev.security.security.CustomAuthenticationProvider;
 import ru.volobuev.security.service.UserService;
 import ru.volobuev.security.service.UserServiceImpl;
 import ru.volobuev.security.utils.CustomLoginSuccessHandler;
+import ru.volobuev.security.utils.DtoConverter;
 
 
 @Configuration
@@ -48,8 +49,9 @@ public class SecurityConfig {
 
     @Bean
     public UserService userService(
-            UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        return new UserServiceImpl(userRepository, roleRepository, passwordEncoder);
+            UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+            DtoConverter dtoConverter) {
+        return new UserServiceImpl(userRepository, roleRepository, passwordEncoder, dtoConverter);
     }
 
     @Bean
