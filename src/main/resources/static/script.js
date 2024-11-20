@@ -52,7 +52,7 @@ const SERVER = {
         return response.data;
     },
     getAllRoles: async () =>{
-        const response = await axios.post('http://localhost:8080/admin/getAllRoles', {}, {
+        const response = await axios.get('http://localhost:8080/admin/getAllRoles', {}, {
             withCredentials: true // Отправлять куки
         });
         console.log(response.data)

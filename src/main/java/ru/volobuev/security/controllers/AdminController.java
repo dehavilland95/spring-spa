@@ -43,7 +43,7 @@ public class AdminController {
         return userService.findById(idDTO.getId());
     }
 
-    @PostMapping("/getAllRoles")
+    @GetMapping("/getAllRoles")
     public List<String> getAllRoles(){
         List<Role> roles = roleService.getAll();
         return roles.stream().map(Role::getName).toList();
