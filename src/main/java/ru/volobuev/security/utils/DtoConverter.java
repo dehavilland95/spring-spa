@@ -35,6 +35,6 @@ public class DtoConverter {
     public User dtoToUser(UserDTO userDTO) {
         return new User(
                 userDTO.getId() == null ? 0 : userDTO.getId(), userDTO.getFirstName(), userDTO.getLastName(),
-                userDTO.getAge(), userDTO.getEmail(), createRolesSet(userDTO.getRoles()));
+                userDTO.getAge(), userDTO.getEmail(), userDTO.getPassword(), createRolesSet(userDTO.getRoles()));
     }
 }

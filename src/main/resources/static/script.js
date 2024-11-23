@@ -67,9 +67,10 @@ const buttonHandlers = {
         const lastName = document.getElementById(`lastName-edit-${userId}`).value;
         const age = document.getElementById(`age-edit-${userId}`).value;
         const email = document.getElementById(`email-edit-${userId}`).value;
+        const password = document.getElementById(`password-edit-${userId}`).value;
         const select = document.getElementById(`usersRoles-edit-${userId}`);
         const roles = Array.from(select.selectedOptions).map(option => option.value);
-        await SERVER.update({ id: userId, firstName, lastName, age, email, roles });
+        await SERVER.update({ id: userId, firstName, lastName, age, email, password, roles });
         const modal = bootstrap.Modal.getInstance(`#modal${userId}`);    
         modal.hide();
         const tableBody = document.getElementById("tableBody");
@@ -276,7 +277,7 @@ const createModalHeader = (titleText) =>{
     return header;
 }
 
-const createModalBody = (user, isDesabled, formType) =>{
+const createModalBody = (user, isDisabled, formType) =>{
     const body = document.createElement('div');
     body.className = 'modal-body';
     const container = document.createElement('div');
@@ -285,20 +286,20 @@ const createModalBody = (user, isDesabled, formType) =>{
     row.className = 'row justify-content-center';
     const firstNameInputBlock = createInputBlock(
         'First Name', 
-        createInput('form-control', user.firstName, 'firstName', isDesabled, formType, user.id));
+        createInput('form-control', user.firstName, 'firstName', isDisabled, formType, user.id));
     const lastNameInputBlock = createInputBlock(
         'Last Name', 
-        createInput('form-control', user.lastName, 'lastName', isDesabled, formType, user.id));
+        createInput('form-control', user.lastName, 'lastName', isDisabled, formType, user.id));
     const ageInputBlock = createInputBlock(
         'Age', 
-        createInput('form-control', user.age, 'age', isDesabled, formType, user.id));
+        createInput('form-control', user.age, 'age', isDisabled, formType, user.id));
     const emailInputBlock = createInputBlock(
         'Email', 
-        createInput('form-control', user.email, 'email', isDesabled, formType, user.id));
+        createInput('form-control', user.email, 'email', isDisabled, formType, user.id));
     const passwordInputBlock = createInputBlock(
         'Password', 
-        createInput('form-control', '', 'password', isDesabled, formType, user.id));
-    const rolesBlock = createRolesInputBlock(user.roles, isDesabled, formType, user.id);
+        createInput('form-control', '', 'password', isDisabled, formType, user.id));
+    const rolesBlock = createRolesInputBlock(user.roles, isDisabled, formType, user.id);
     row.appendChild(firstNameInputBlock);
     row.appendChild(lastNameInputBlock);
     row.appendChild(ageInputBlock);

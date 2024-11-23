@@ -68,7 +68,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public void update(UserDTO userDTO) {
         User user = dtoConverter.dtoToUser(userDTO);
-        userRepository.save(user);
+        Optional<User> userFromDb = userRepository.findById(user.getId());
+        if (userFromDb.isPresent()) {
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            }else{
+                user.setPassword(userFromDb.get().getPassword());
+            }
+            userRepository.save(user);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -80,7 +88,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void save(UserDTO userDTO) {
         Optional<User> userFromDB = userRepository.findByEmail(userDTO.getEmail());
         if (userFromDB.isPresent()) {
-            throw  new RuntimeException("User already exists");
+            throw new RuntimeException("User already exists");
         }
         User user = dtoConverter.dtoToUser(userDTO);
         user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
