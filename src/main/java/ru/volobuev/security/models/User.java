@@ -20,7 +20,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     @Column
-    private int age;
+    private Integer age;
     @Column
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -33,13 +33,13 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
     public User() {
     }
-    public User(String firstName, String lastName, String email, int age) {
+    public User(String firstName, String lastName, String email, Integer age) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.age = age;
     }
-    public User(String firstName, String lastName, String email, int age, String password) {
+    public User(String firstName, String lastName, String email, Integer age, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -47,7 +47,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(long id, String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
+    public User(Long id, String firstName, String lastName, Integer age, String email, String password, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -89,11 +89,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
